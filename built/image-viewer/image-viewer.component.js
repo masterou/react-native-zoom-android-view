@@ -25,18 +25,28 @@ let ImageViewer = class ImageViewer extends React.Component {
         this.styles = image_viewer_style_1.default(0, 0);
         this.hasLayout = false;
         this.loadedIndex = new Map();
-        this._isMount = true;
-    }
-    componentWillUnmount() {
-        this._isMount = false;
     }
     componentWillMount() {
         this.init(this.props);
     }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.index !== this.state.currentShowIndex) {
+            this.setState({
+                currentShowIndex: nextProps.index
+            }, () => {
+                this.loadImage(nextProps.index);
+                this.jumpToCurrentImage();
+                react_native_1.Animated.timing(this.fadeAnim, {
+                    toValue: 1,
+                    duration: 200
+                }).start();
+            });
+        }
+    }
     init(nextProps) {
         if (nextProps.imageUrls.length === 0) {
             this.fadeAnim.setValue(0);
-            return this._isMount && this.setState(new typings.State());
+            return this.setState(new typings.State());
         }
         const imageSizes = [];
         nextProps.imageUrls.forEach(imageUrl => {
@@ -46,7 +56,7 @@ let ImageViewer = class ImageViewer extends React.Component {
                 status: 'loading'
             });
         });
-        this._isMount && this.setState({
+        this.setState({
             currentShowIndex: nextProps.index,
             imageSizes
         }, () => {
@@ -64,7 +74,7 @@ let ImageViewer = class ImageViewer extends React.Component {
         this.positionX.setValue(this.positionXNumber);
     }
     loadImage(index) {
-        if (this.loadedIndex.has(index) && this.state.imageSizes[index].status !== 'fail') {
+        if (this.loadedIndex.has(index)) {
             return;
         }
         this.loadedIndex.set(index, true);
@@ -76,7 +86,7 @@ let ImageViewer = class ImageViewer extends React.Component {
             }
             const imageSizes = this.state.imageSizes.slice();
             imageSizes[index] = imageStatus;
-            this._isMount && this.setState({
+            this.setState({
                 imageSizes
             });
         };
@@ -90,18 +100,30 @@ let ImageViewer = class ImageViewer extends React.Component {
         }
         let sizeLoaded = false;
         let imageLoaded = false;
+        if (image.url.startsWith(`file:`)) {
+            imageLoaded = true;
+        }
         if (react_native_1.Platform.OS !== 'web') {
             const prefetchImagePromise = react_native_1.Image.prefetch(image.url);
-            prefetchImagePromise.then(() => {
+            if (image.url.match(/^(http|https):\/\//)) {
+                prefetchImagePromise.then(() => {
+                    imageLoaded = true;
+                    if (sizeLoaded) {
+                        imageStatus.status = 'success';
+                        saveImageSize();
+                    }
+                }, () => {
+                    imageStatus.status = 'fail';
+                    saveImageSize();
+                });
+            }
+            else {
                 imageLoaded = true;
                 if (sizeLoaded) {
                     imageStatus.status = 'success';
                     saveImageSize();
                 }
-            }, (error) => {
-                imageStatus.status = 'fail';
-                saveImageSize();
-            });
+            }
             if (image.width && image.height) {
                 sizeLoaded = true;
                 imageStatus.width = image.width;
@@ -120,7 +142,7 @@ let ImageViewer = class ImageViewer extends React.Component {
                         imageStatus.status = 'success';
                         saveImageSize();
                     }
-                }, (error) => {
+                }, (_error) => {
                     imageStatus.status = 'fail';
                     saveImageSize();
                 });
@@ -189,7 +211,7 @@ let ImageViewer = class ImageViewer extends React.Component {
             toValue: this.positionXNumber,
             duration: 100,
         }).start();
-        this._isMount && this.setState({
+        this.setState({
             currentShowIndex: this.state.currentShowIndex - 1
         }, () => {
             this.props.onChange(this.state.currentShowIndex);
@@ -206,7 +228,7 @@ let ImageViewer = class ImageViewer extends React.Component {
             toValue: this.positionXNumber,
             duration: 100,
         }).start();
-        this._isMount && this.setState({
+        this.setState({
             currentShowIndex: this.state.currentShowIndex + 1
         }, () => {
             this.props.onChange(this.state.currentShowIndex);
@@ -219,19 +241,22 @@ let ImageViewer = class ImageViewer extends React.Component {
             duration: 150,
         }).start();
     }
-    handleLongPress(image) {
+    handleLongPress(_image) {
         if (this.props.saveToLocalByLongPress) {
-            this._isMount && this.setState({
+            this.setState({
                 isShowMenu: true
             });
+        }
+        if (this.props.onLongPress) {
+            this.props.onLongPress();
         }
     }
     handleClick() {
         this.props.onClick(this.handleCancel.bind(this));
     }
-    handleDoubleClick() {
-        this.props.onDoubleClick(this.handleCancel.bind(this));
-    }
+    // handleDoubleClick() {
+    //     this.props.onDoubleClick(this.handleCancel.bind(this));
+    // }
     handleCancel() {
         this.hasLayout = false;
         this.props.onCancel();
@@ -264,26 +289,34 @@ let ImageViewer = class ImageViewer extends React.Component {
                 width *= HeightPixel;
                 height *= HeightPixel;
             }
-
             if (imageInfo.status === 'success' && this.props.enableImageZoom) {
-                return (React.createElement(react_native_image_pan_zoom_1.default, { key: index, style: this.styles.modalContainer, cropWidth: this.width, cropHeight: this.height, imageWidth: width, imageHeight: height, maxOverflow: this.props.maxOverflow, horizontalOuterRangeOffset: this.handleHorizontalOuterRangeOffset.bind(this), responderRelease: this.handleResponderRelease.bind(this), onLongPress: this.handleLongPress.bind(this, image), onClick: this.handleClick.bind(this), onDoubleClick: this.handleDoubleClick.bind(this) },
+                return (React.createElement(react_native_image_pan_zoom_1.default, { key: index, style: this.styles.modalContainer,imgConStyle:this.props.imgConStyle, cropWidth: this.width, cropHeight: this.height, imageWidth: width, imageHeight: height, maxOverflow: this.props.maxOverflow, horizontalOuterRangeOffset: this.handleHorizontalOuterRangeOffset.bind(this), responderRelease: this.handleResponderRelease.bind(this), onLongPress: this.handleLongPress.bind(this, image),
+                  onClick: this.handleClick.bind(this),
+                  // onDoubleClick: this.handleDoubleClick.bind(this)
+                },
                     React.createElement(react_native_1.Image, { style: [this.styles.imageStyle, { width: width, height: height }], source: { uri: image.url } })));
             }
             else {
                 switch (imageInfo.status) {
                     case 'loading':
-                        return (React.createElement(react_native_image_pan_zoom_1.default, { key: index, style: this.styles.modalContainer, cropWidth: this.width, cropHeight: this.height, imageWidth: width, imageHeight: height, maxOverflow: this.props.maxOverflow, horizontalOuterRangeOffset: this.handleHorizontalOuterRangeOffset.bind(this), responderRelease: this.handleResponderRelease.bind(this), }, this.props.loadingRender()));
+                        return (React.createElement(react_native_1.TouchableHighlight, { key: index,
+                          onPress: this.handleClick.bind(this),
+                          style: this.styles.loadingTouchable },
+                            React.createElement(react_native_1.View, { style: this.styles.loadingContainer }, this.props.loadingRender())));
                     case 'success':
                         return (React.createElement(react_native_1.Image, { key: index, style: [this.styles.imageStyle, { width: width, height: height }], source: { uri: image.url } }));
                     case 'fail':
-                        return (React.createElement(react_native_image_pan_zoom_1.default, { key: index, style: this.styles.modalContainer, cropWidth: this.width, cropHeight: this.height, imageWidth: width, imageHeight: height, maxOverflow: this.props.maxOverflow, horizontalOuterRangeOffset: this.handleHorizontalOuterRangeOffset.bind(this), responderRelease: this.handleResponderRelease.bind(this), onLongPress: this.handleLongPress.bind(this, image), onClick: this.handleClick.bind(this), onDoubleClick: this.handleDoubleClick.bind(this) },
-                            React.createElement(react_native_1.TouchableOpacity, { key: index, style: this.styles.failContainer, onClick: () => this.loadImage(index) },
+                        return (React.createElement(react_native_image_pan_zoom_1.default, { key: index, style: this.styles.modalContainer, cropWidth: this.width, cropHeight: this.height, imageWidth: width, imageHeight: height, maxOverflow: this.props.maxOverflow, horizontalOuterRangeOffset: this.handleHorizontalOuterRangeOffset.bind(this), responderRelease: this.handleResponderRelease.bind(this), onLongPress: this.handleLongPress.bind(this, image),
+                          onClick: this.handleClick.bind(this),
+                          // onDoubleClick: this.handleDoubleClick.bind(this)
+                        },
+                            React.createElement(react_native_1.TouchableOpacity, { key: index, style: this.styles.failContainer },
                                 React.createElement(react_native_1.Image, { source: this.props.failImageSource, style: this.styles.failImage }))));
                 }
             }
         });
         return (React.createElement(react_native_1.Animated.View, { style: [this.styles.container, { opacity: this.fadeAnim }] },
-            this.props.renderHeader(),
+            this.props.renderHeader(this.state.currentShowIndex),
             React.createElement(react_native_1.View, { style: this.styles.arrowLeftContainer },
                 React.createElement(react_native_1.TouchableWithoutFeedback, { onPress: this.goBack.bind(this) },
                     React.createElement(react_native_1.View, null, this.props.renderArrowLeft()))),
@@ -297,7 +330,7 @@ let ImageViewer = class ImageViewer extends React.Component {
                 React.createElement(react_native_1.View, { style: this.styles.watchOrigin },
                     React.createElement(react_native_1.TouchableOpacity, { style: this.styles.watchOriginTouchable },
                         React.createElement(react_native_1.Text, { style: this.styles.watchOriginText }, "\u67E5\u770B\u539F\u56FE(2M)"))),
-            this.props.renderFooter()));
+            this.props.renderFooter(this.state.currentShowIndex)));
     }
     saveToLocal() {
         if (!this.props.onSave) {
@@ -307,7 +340,7 @@ let ImageViewer = class ImageViewer extends React.Component {
         else {
             this.props.onSave(this.props.imageUrls[this.state.currentShowIndex].url);
         }
-        this._isMount && this.setState({
+        this.setState({
             isShowMenu: false
         });
     }
@@ -318,13 +351,13 @@ let ImageViewer = class ImageViewer extends React.Component {
         return (React.createElement(react_native_1.View, { style: this.styles.menuContainer },
             React.createElement(react_native_1.View, { style: this.styles.menuShadow }),
             React.createElement(react_native_1.View, { style: this.styles.menuContent },
-                React.createElement(react_native_1.TouchableOpacity, { underlayColor: "#F2F2F2", onPress: this.saveToLocal.bind(this), style: this.styles.operateContainer },
+                React.createElement(react_native_1.TouchableHighlight, { underlayColor: "#F2F2F2", onPress: this.saveToLocal.bind(this), style: this.styles.operateContainer },
                     React.createElement(react_native_1.Text, { style: this.styles.operateText }, this.props.menuContext.saveToLocal)),
-                React.createElement(react_native_1.TouchableOpacity, { underlayColor: "#F2F2F2", onPress: this.handleLeaveMenu.bind(this), style: this.styles.operateContainer },
+                React.createElement(react_native_1.TouchableHighlight, { underlayColor: "#F2F2F2", onPress: this.handleLeaveMenu.bind(this), style: this.styles.operateContainer },
                     React.createElement(react_native_1.Text, { style: this.styles.operateText }, this.props.menuContext.cancel)))));
     }
     handleLeaveMenu() {
-        this._isMount && this.setState({
+        this.setState({
             isShowMenu: false
         });
     }
