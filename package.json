@@ -42,7 +42,7 @@
     "name": "ascoders"
   },
   "bugs": {
-    "url": "https://github.com/ascoders/react-native-image-viewer/issues"
+    "url": "https://github.com/masterou/react-native-image-viewer/issues"
   },
   "dependencies": {
     "nt-transmit-transparently": "^1.0.7",
@@ -58,7 +58,7 @@
     "tarball": "http://registry.npm.taobao.org/react-native-image-zoom-viewer/download/react-native-image-zoom-viewer-2.0.2.tgz"
   },
   "gitHead": "db3c73fd843222e7890ddf5ce3d86faed220b882",
-  "homepage": "https://github.com/ascoders/react-native-image-viewer#readme",
+  "homepage": "https://github.com/masterou/react-native-image-viewer#readme",
   "keywords": [
     "image-viewer"
   ],
