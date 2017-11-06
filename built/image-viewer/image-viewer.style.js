@@ -35,7 +35,8 @@ exports.default = (width, height) => {
         },
         moveBox: {
             flexDirection: 'row',
-            alignItems: 'center'
+            alignItems: 'flex-start',
+            justifyContent:'center',
         },
         menuContainer: {
             position: 'absolute',
@@ -83,14 +84,14 @@ exports.default = (width, height) => {
             height: height
         },
         failContainer: {
-            flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
+            width: width,
+            height: height
         },
         failImage: {
             width: 90,
-            height: 90,
-            resizeMode: 'contain',
+            height: 60
         },
         arrowLeftContainer: {
             position: 'absolute',
