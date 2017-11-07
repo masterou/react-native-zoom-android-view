@@ -1,20 +1,20 @@
 {
   "_args": [
     [
-      "react-native-zoom-android-view",
+      "react-native-image-zoom-viewer",
       "C:\\Disk\\WorkSpace\\gaotoo\\App\\trunk"
     ]
   ],
   "_cnpm_publish_time": 1493082332299,
-  "_from": "react-native-zoom-android-view@latest",
-  "_id": "react-native-zoom-android-view@2.0.2",
+  "_from": "react-native-image-zoom-viewer@latest",
+  "_id": "react-native-image-zoom-viewer@2.0.2",
   "_inCache": true,
   "_installable": true,
-  "_location": "/react-native-zoom-android-view",
+  "_location": "/react-native-image-zoom-viewer",
   "_nodeVersion": "5.12.0",
   "_npmOperationalInternal": {
     "host": "packages-12-west.internal.npmjs.com",
-    "tmp": "tmp/react-native-zoom-android-view-2.0.2.tgz_1493082331995_0.22394078434444964"
+    "tmp": "tmp/react-native-image-zoom-viewer-2.0.2.tgz_1493082331995_0.22394078434444964"
   },
   "_npmUser": {
     "email": "576625322@qq.com",
@@ -23,8 +23,8 @@
   "_npmVersion": "3.8.6",
   "_phantomChildren": {},
   "_requested": {
-    "name": "react-native-zoom-android-view",
-    "raw": "react-native-zoom-android-view",
+    "name": "react-native-image-zoom-viewer",
+    "raw": "react-native-image-zoom-viewer",
     "rawSpec": "",
     "scope": null,
     "spec": "latest",
@@ -33,10 +33,10 @@
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "https://registry.npm.taobao.org/react-native-zoom-android-view/download/react-native-zoom-android-view-2.0.2.tgz",
+  "_resolved": "https://registry.npm.taobao.org/react-native-image-zoom-viewer/download/react-native-image-zoom-viewer-2.0.2.tgz",
   "_shasum": "f293999a115c03ac794cdb3fa78f01e941bbaa5f",
   "_shrinkwrap": null,
-  "_spec": "react-native-zoom-android-view",
+  "_spec": "react-native-image-zoom-viewer",
   "_where": "C:\\Disk\\WorkSpace\\gaotoo\\App\\trunk",
   "author": {
     "name": "ascoders"
@@ -55,7 +55,7 @@
     "noattachment": false,
     "shasum": "f293999a115c03ac794cdb3fa78f01e941bbaa5f",
     "size": 48415,
-    "tarball": "http://registry.npm.taobao.org/react-native-zoom-android-view/download/react-native-zoom-android-view-2.0.2.tgz"
+    "tarball": "http://registry.npm.taobao.org/react-native-image-zoom-viewer/download/react-native-image-zoom-viewer-2.0.2.tgz"
   },
   "gitHead": "db3c73fd843222e7890ddf5ce3d86faed220b882",
   "homepage": "https://github.com/masterou/react-native-zoom-android-view#readme",
@@ -70,7 +70,7 @@
       "email": "576625322@qq.com"
     }
   ],
-  "name": "react-native-zoom-android-view",
+  "name": "react-native-image-zoom-viewer",
   "optionalDependencies": {},
   "peerDependencies": {
     "react": "*",
