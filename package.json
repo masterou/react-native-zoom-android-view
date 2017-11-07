@@ -80,7 +80,7 @@
   "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/masterou/react-native-zoom-android-view.git"
+    "url": "https://github.com/masterou/react-native-zoom-android-view.git"
   },
   "scripts": {},
   "typings": "index.ts",
